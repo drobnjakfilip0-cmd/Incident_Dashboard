@@ -1,11 +1,29 @@
 const API = 'api/incidents.php';
 
+const DOZVOLJENE = ['info', 'low', 'medium', 'high', 'critical'];
+
+const params = new URLSearchParams(location.search);
+const severityIzUrl = params.get("severity");
+
+let pocetniSeverity = "";
+let pocetnaGreska = null;
+
+if (severityIzUrl !== null) {
+    if (DOZVOLJENE.includes(severityIzUrl)) {
+        pocetniSeverity = severityIzUrl;
+    } else {
+        pocetnaGreska =
+            `Nevažeća severity vrednost: ${severityIzUrl}`;
+    }
+}
+
+
 let stanje = {
-    filteri: { severity: ""},
+    filteri: { severity: pocetniSeverity},
     redovi: [], 
     ukupno: 0,
     ucitava: false,
-    greska: null,
+    greska: pocetnaGreska,
     asOf: null,
 };
 
@@ -18,6 +36,8 @@ const el = {
     ucitava: document.querySelector('#ucitava'),
 
 }
+
+el.forma.elements.severity.value = stanje.filteri.severity;
 
 function vremeUTC(iso) {
     const d = new Date(iso), p = (n) => String(n).padStart(2, "0");
@@ -109,7 +129,26 @@ async function ucitaj() {
 el.forma.addEventListener("change", (e) => {
     if (!e.target.matches("select")) return;
     stanje = {...stanje, filteri:{...stanje.filteri, [e.target.name]: e.target.value}};
+
+    const params = new URLSearchParams();
+
+    if (stanje.filteri.severity) {
+        params.set("severity", stanje.filteri.severity)
+    };
+
+    const query = params.toString();
+
+    history.replaceState(
+        null,
+        "",
+        query ? `?${query}` : location.pathname
+    );
+
     ucitaj();
 });
 
-ucitaj();
+if (pocetnaGreska) {
+    crtaj();
+} else {
+    ucitaj();
+}

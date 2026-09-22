@@ -7,7 +7,15 @@ const DOZVOLJENI_SEVERITY = ['info', 'low', 'medium', 'high', 'critical'];
 function filtrirajDozvoljene(?string $raw, array $dozvoljene): array {
     if ($raw === null || $raw === '') return [];
     $trazene = array_map('trim', explode(',', $raw));
-    return array_values(array_intersect($trazene, $dozvoljene));
+
+    foreach ($trazene as $t) {
+        if (!in_array($t, $dozvoljene, true)) {
+            jsonOdgovor([
+                'error' => "Nepostojeca severity vrednost: $t"
+            ], 400);
+        }
+    }
+    return $trazene;
 }
 
 $severity = filtrirajDozvoljene($_GET['severity'] ?? null, DOZVOLJENI_SEVERITY);
