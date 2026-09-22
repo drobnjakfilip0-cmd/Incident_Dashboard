@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="sr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Severity</title>
+        <link rel="stylesheet" href="style.css"/>
+        <script src="app.js" defer></script>
+    </head>
+    <body>
+         <header class="traka">
+            <span class="logo">BLADE</span>
+             <span class="modul">Incidents</span>
+        </header>
+        
+        <main>
+
+
+            <form id="filteri" class="filteri">
+            <div class="polje">
+                <label for="f-severity">Severity</label>
+                <select id="f-severity" name="severity">
+                    <option value="">Sve</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                    <option value="info">Info</option>
+                </select>
+            </div>
+        </form>
+
+        <p id="brojac" class="brojac" aria-live="polite"></p>
+        <div id="greska" class="greska" role="alert" hidden></div>
+
+        <table class="tabela">
+            <thead>
+                <tr>
+                    <th scope="col">Vreme (UTC)</th>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Host</th>
+                    <th scope="col">Proces</th>
+                    <th scope="col">Naslov</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody id="lista">
+               
+                
+            </tbody>
+        </table>
+
+        <p id="prazno" class="prazno" hidden></p>
+        <div id="ucitava" class="ucitava" hidden>Učitavanje...</div>
+
+
+
+        </main>
+
+
+    </body>
+</html>

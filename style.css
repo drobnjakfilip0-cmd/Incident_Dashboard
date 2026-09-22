@@ -1,0 +1,227 @@
+/* =========================================================================
+   BLADE — Incidents (Zadatak 1)
+   Pravila: bez eksternih fontova i CDN-a (on-prem), boja nikad jedini
+   nosilac informacije, kontrast teksta najmanje 4.5:1 (WCAG AA).
+   ========================================================================= */
+
+/* ---------- 1. Promenljive: svetla tema ---------- */
+:root {
+  --pozadina: #f5f7f7;
+  --povrsina: #ffffff;
+  --tekst: #13201e;
+  --prigusen: #56625f;
+  --ivica: #d6dfdd;
+  --akcent: #0f766e;
+  --traka: #0d2f2b;
+  --traka-tekst: #e6f2f0;
+  --hover: #eef5f4;
+
+  /* severity: pozadina / tekst -- parovi provereni na kontrast */
+  --crit-bg: #fde2e2;  --crit-fg: #8f1d1d;
+  --high-bg: #fee6d3;  --high-fg: #8a3a0c;
+  --med-bg:  #fdf3c4;  --med-fg:  #6b4e05;
+  --low-bg:  #dcecfb;  --low-fg:  #0b4f86;
+  --info-bg: #eceff1;  --info-fg: #44525a;
+
+  --greska-bg: #fde2e2; --greska-fg: #8f1d1d;
+
+  color-scheme: light dark;
+}
+
+/* ---------- 2. Tamna tema -- SOC timovi cesto rade u zamracenim salama ---- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pozadina: #0d1413;
+    --povrsina: #131c1b;
+    --tekst: #dde6e4;
+    --prigusen: #97a6a3;
+    --ivica: #263330;
+    --akcent: #2dd4bf;
+    --traka: #081010;
+    --traka-tekst: #dde6e4;
+    --hover: #1a2625;
+
+    --crit-bg: #4a1414;  --crit-fg: #fecaca;
+    --high-bg: #4a2410;  --high-fg: #fed7aa;
+    --med-bg:  #43370a;  --med-fg:  #fde68a;
+    --low-bg:  #0f2f4d;  --low-fg:  #bfdbfe;
+    --info-bg: #252f33;  --info-fg: #cbd5e1;
+
+    --greska-bg: #4a1414; --greska-fg: #fecaca;
+  }
+}
+
+/* ---------- 3. Osnova ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+[hidden] { display: none !important; }   /* da ga nijedno pravilo ne pregazi */
+
+body {
+  margin: 0;
+  /* sistemski fontovi: nista se ne preuzima sa interneta */
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--tekst);
+  background: var(--pozadina);
+}
+
+.mono,
+td:nth-child(1) {                         /* kolona vremena */
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 12.5px;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ---------- 4. Gornja traka ---------- */
+.traka {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  background: var(--traka); color: var(--traka-tekst);
+}
+.logo   { font-weight: 700; letter-spacing: 2px; }
+.modul  { opacity: .75; }
+
+main { padding: 16px 20px; max-width: 1280px; margin: 0 auto; }
+
+/* ---------- 5. Filteri ---------- */
+.filteri {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+  margin-bottom: 8px;
+}
+.polje { display: flex; flex-direction: column; gap: 4px; }
+
+label {
+  font-size: 12px; font-weight: 600; color: var(--prigusen);
+  text-transform: uppercase; letter-spacing: .4px;
+}
+
+select {
+  font: inherit; color: var(--tekst); background: var(--povrsina);
+  border: 1px solid var(--ivica); border-radius: 6px;
+  padding: 6px 10px; min-width: 160px;
+}
+
+/* fokus MORA da se vidi -- analiticari rade tastaturom */
+select:focus-visible, button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--akcent); outline-offset: 2px;
+}
+
+/* ---------- 6. Stanja: brojac, greska, prazno, ucitavanje ---------- */
+.brojac {
+  margin: 8px 0; font-size: 12.5px; color: var(--prigusen);
+  font-variant-numeric: tabular-nums;
+  min-height: 1.45em;                      /* ne skace kad je prazan */
+}
+
+.greska {
+  background: var(--greska-bg); color: var(--greska-fg);
+  border-left: 4px solid currentColor;
+  padding: 10px 12px; border-radius: 6px; margin: 8px 0;
+}
+
+.prazno, .ucitava {
+  color: var(--prigusen); padding: 24px 0; text-align: center;
+}
+
+/* ---------- 7. Tabela ---------- */
+.tabela {
+  width: 100%; border-collapse: collapse;
+  background: var(--povrsina);
+  border: 1px solid var(--ivica);
+}
+
+th {
+  position: sticky; top: 0; z-index: 1;    /* zaglavlje ostaje pri skrolu */
+  background: var(--povrsina);
+  text-align: left; font-size: 11.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .5px; color: var(--prigusen);
+  padding: 10px 12px; border-bottom: 2px solid var(--ivica);
+}
+
+td {
+  padding: 8px 12px; border-bottom: 1px solid var(--ivica);
+  vertical-align: top;
+}
+
+tbody tr:hover { background: var(--hover); }
+
+td:nth-child(1) { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Ime procesa i host: NE skracivati sa "...". Napadac moze da nazove
+   proces tako da pocinje kao legitimno ime, a razlika je na KRAJU
+   (svchost.exe.update-helper-x64.exe). Zato se lomi, a ne sece. */
+td.mono { overflow-wrap: anywhere; }
+
+/* Host: Windows (NetBIOS) ime racunara ima najvise 15 znakova,
+   pa sme u jedan red -- "WS-FIN-" / "014" u dva reda se lose cita. */
+td:nth-child(3) { white-space: nowrap; }
+
+/* Critical red dobija traku sa leve strane -- bez ijedne linije JS-a */
+tbody tr:has(.sev-critical) td:first-child {
+  box-shadow: inset 3px 0 0 var(--crit-fg);
+}
+
+/* ---------- 8. Oznake ozbiljnosti ---------- */
+.sev {
+  display: inline-block; min-width: 68px; text-align: center;
+  padding: 2px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .4px;
+}
+.sev-critical { background: var(--crit-bg); color: var(--crit-fg); }
+.sev-high     { background: var(--high-bg); color: var(--high-fg); }
+.sev-medium   { background: var(--med-bg);  color: var(--med-fg); }
+.sev-low      { background: var(--low-bg);  color: var(--low-fg); }
+.sev-info     { background: var(--info-bg); color: var(--info-fg); }
+
+/* ---------- 9. Uzan ekran: svaki red postaje kartica ----------
+   Sest kolona ne staje u 390 px. Umesto horizontalnog skrola, red se
+   slaze u mrezu. Redosled kolona iz JS-a: 1 vreme, 2 severity, 3 host,
+   4 proces, 5 naslov, 6 status. */
+@media (max-width: 760px) {
+  main { padding: 12px; }
+  select { min-width: 0; width: 100%; }
+  .polje { flex: 1 1 140px; }
+
+  .tabela, .tabela tbody { display: block; border: 0; background: none; }
+  .tabela thead {                          /* sakriveno vizuelno, ne za citac */
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0 0 0 0);
+  }
+
+  .tabela tr {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "sev    vreme"
+      "host   host"
+      "proc   proc"
+      "naslov naslov"
+      "status status";
+    gap: 4px 10px;
+    padding: 10px 12px; margin-bottom: 8px;
+    background: var(--povrsina);
+    border: 1px solid var(--ivica); border-radius: 8px;
+  }
+  .tabela td { padding: 0; border: 0; }
+  .tabela td:nth-child(1) { grid-area: vreme; justify-self: end;
+                            color: var(--prigusen); }
+  .tabela td:nth-child(2) { grid-area: sev; }
+  .tabela td:nth-child(3) { grid-area: host; font-weight: 600; }
+  .tabela td:nth-child(4) { grid-area: proc; }
+  .tabela td:nth-child(5) { grid-area: naslov; }
+  .tabela td:nth-child(6) { grid-area: status; font-size: 12px;
+                            color: var(--prigusen); }
+
+  /* traka za critical prelazi sa prve celije na celu karticu */
+  .tabela tr:has(.sev-critical) td:first-child { box-shadow: none; }
+  .tabela tr:has(.sev-critical) { border-left: 4px solid var(--crit-fg); }
+}
+
+/* ---------- 10. Korisnici koji ne podnose animacije ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
