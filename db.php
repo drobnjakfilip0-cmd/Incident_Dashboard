@@ -178,3 +178,4 @@ function trenutniKorisnik(): array {
     $k = $st->fetch();
     return $k ?: ['id' => 0, 'username' => 'anonymous', 'role' => 'viewer'];
 }
+

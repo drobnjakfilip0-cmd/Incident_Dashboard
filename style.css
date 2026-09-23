@@ -177,6 +177,23 @@ tbody tr:has(.sev-critical) td:first-child {
 .sev-low      { background: var(--low-bg);  color: var(--low-fg); }
 .sev-info     { background: var(--info-bg); color: var(--info-fg); }
 
+select, input[type="search"] {
+  font: inherit; color: var(--tekst); background: var(--povrsina);
+  border: 1px solid var(--ivica); border-radius: 6px;
+  padding: 6px 10px;
+}
+.polje.raste { flex: 1 1 260px; }
+
+input[type="search"]:focus-visible {
+  outline: 2px solid var(--akcent); outline-offset: 2px;
+}
+
+/* isticanje pogotka iz Zadatka 2 */
+mark {
+  background: var(--med-bg); color: var(--med-fg);
+  padding: 0 2px; border-radius: 3px;
+}
+
 /* ---------- 9. Uzan ekran: svaki red postaje kartica ----------
    Sest kolona ne staje u 390 px. Umesto horizontalnog skrola, red se
    slaze u mrezu. Redosled kolona iz JS-a: 1 vreme, 2 severity, 3 host,

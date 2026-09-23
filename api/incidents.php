@@ -29,6 +29,15 @@ if ($severity) {
     array_push($vrednosti, ...$severity);
 }
 
+$q = trim((string)($_GET['q'] ?? ''));
+
+if ($q !== '') 
+    { 
+        $uslovi[] = "(hostname LIKE ? OR process_name LIKE ? OR title LIKE ?)";
+        $sablon = '%' . $q . '%';
+        array_push($vrednosti, $sablon, $sablon, $sablon);
+     }
+
 $where = $uslovi ? 'WHERE ' . implode(' AND ', $uslovi) : '';
 
 try {

@@ -19,7 +19,7 @@ if (severityIzUrl !== null) {
 
 
 let stanje = {
-    filteri: { severity: pocetniSeverity},
+    filteri: { severity: pocetniSeverity,  q: ""},
     redovi: [], 
     ukupno: 0,
     ucitava: false,
@@ -45,6 +45,10 @@ function vremeUTC(iso) {
     `${p(d.getUTCHours())}:${p(d.getUTCMinutes())}`;
 }
 
+function istakni(tekst, pojam) { const frag = document.createDocumentFragment(); if (!pojam) { frag.appendChild(document.createTextNode(tekst)); return frag; } const t = tekst.toLowerCase(); const p = pojam.toLowerCase(); let i = 0, j; while ((j = t.indexOf(p, i)) !== -1) { if (j > i) { frag.appendChild(document.createTextNode(tekst.slice(i, j))); } const m = document.createElement("mark"); m.textContent = tekst.slice(j, j + pojam.length);  frag.appendChild(m); i = j + pojam.length; } if (i < tekst.length) { frag.appendChild(document.createTextNode(tekst.slice(i))); } return frag;}
+
+const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };};
+
 function crtaj() {
 
     el.ucitava.hidden = !stanje.ucitava;
@@ -55,7 +59,7 @@ function crtaj() {
 
     el.brojac.textContent = stanje.ukupno ? `Prikazano ${stanje.redovi.length} od ${stanje.ukupno}` : "";
 
-    const imaFilter = stanje.filteri.severity != "";
+    const imaFilter = Object.values(stanje.filteri).some((v) => v !== "");
     el.prazno.hidden = stanje.redovi.length > 0 || stanje.ucitava || stanje.greska;
     el.prazno.textContent = imaFilter ? "Nijedan incident ne odgovara ovom filteru." : "Nema incidenata.";
 
@@ -66,6 +70,8 @@ function red(inc) {
     const tr = document.createElement("tr");
     tr.dataset.id = inc.id;
 
+    
+
     const vreme = document.createElement("td");
     vreme.textContent = vremeUTC(inc.created_at);
 
@@ -75,22 +81,22 @@ function red(inc) {
     znak.textContent = inc.severity;
     sev.appendChild(znak);
 
-    const host = document.createElement("td");
-    host.textContent = inc.hostname;
+   const host = document.createElement("td");
+  host.textContent = inc.hostname;                    // <-- 1
 
-    const proces = document.createElement("td")
-    proces.className = "mono";
-    proces.textContent = inc.process_name;
+  const proces = document.createElement("td");
+  proces.className = "mono";
+  proces.textContent = inc.process_name;              // <-- 2
 
-    const naslov = document.createElement("td");
-    naslov.textContent = inc.title;
+  const naslov = document.createElement("td");
+  naslov.textContent = inc.title;                     // <-- 3
 
-    const status = document.createElement("td");
-    status.textContent = inc.status;
+  const status = document.createElement("td");
+  status.textContent = inc.status;
 
-    tr.append(vreme, sev, host, proces, naslov, status);
-
-    return tr;
+  tr.append(vreme, sev, host, proces, naslov, status);
+  return tr;
+    
 }
 
 let kontroler = null;
@@ -105,6 +111,7 @@ async function ucitaj() {
     const p = new URLSearchParams();
     p.set("limit", 25);
     if (stanje.filteri.severity) p.set("severity", stanje.filteri.severity);
+    if (stanje.filteri.q) p.set("q", stanje.filteri.q);
 
     try {
 
@@ -146,6 +153,13 @@ el.forma.addEventListener("change", (e) => {
 
     ucitaj();
 });
+
+el.forma.addEventListener("submit", (e) => e.preventDefault());
+
+document.querySelector("#f-q").addEventListener("input", debounce((e) => {
+  stanje = { ...stanje, filteri: { ...stanje.filteri, q: e.target.value.trim() } };
+  ucitaj();
+}, 300));
 
 if (pocetnaGreska) {
     crtaj();
